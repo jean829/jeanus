@@ -1,0 +1,49 @@
+#include <iostream>
+#include<string>
+#include<math.h>
+using namespace std;
+int c=0,s=0;
+int least(int a[15])
+{
+    int i,k;
+    k=a[0];
+    for(i=1;i<c;i++)
+        if(a[i]<k) k=a[i];
+        else continue;
+    return k;
+}
+int most(int a[15])
+{
+    int i,k;
+    k=a[0];
+    for(i=1;i<s;i++)
+        if(a[i]>k) k=a[i];
+        else continue;
+    return k;
+}
+int main()
+{
+    char a1[15],b1[15],a[15],b[15];
+    int i,m[20],n[20],j,k,l,p;
+    gets(a1);
+    gets(b1);
+    for(i=0;a1[i]>='A'&&a1[i]<='z';i++)
+        if(a1[i]>='A'&&a1[i]<='Z') a[i]=a1[i]+32;
+        else a[i]=a1[i];
+    for(i=0;b1[i]>='A'&&b1[i]<='z';i++)
+         if(b1[i]>='A'&&b1[i]<='Z') b[i]=b1[i]+32;
+         else b[i]=b1[i];
+    for(i=0;a[i]>='a'&&a[i]<='z';i++)
+    { m[i]=(int)a[i]-96; c++;}
+    for(i=0;b[i]>='a'&&b[i]<='z';i++)
+    {  n[i]=(int)b[i]-96 ; s++ ; }
+    j=least(m);
+    k=most(m);
+    l=least(n);
+    p=most(n);//j-l j-p k-l k-p
+    if(fabs(j-l)<fabs(k-p)&&fabs(j-l)<fabs(j-p)&&fabs(j-l)<fabs(k-l))  cout<<fabs(j-l);
+    else if(fabs(k-p)<fabs(j-l)&&fabs(k-p)<fabs(j-p)&&fabs(k-p)<fabs(k-l)) cout<<fabs(k-p);
+    else if(fabs(j-p)<fabs(j-l)&&fabs(j-p)<fabs(k-p)&&fabs(j-p)<fabs(k-l)) cout<<fabs(j-p);
+    else if(fabs(k-l)<fabs(j-l)&&fabs(k-l)<fabs(j-p)&&fabs(k-l)<fabs(k-p)) cout<<fabs(k-l);
+    return 0;
+}
