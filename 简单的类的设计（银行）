@@ -1,0 +1,60 @@
+#include  <iostream>
+#include  <iomanip>
+using  namespace  std;
+//请在此处补充Account类的定义
+class Account
+{
+public:
+    void init(const char* credit1,const char* name1,const char* sex1,int age1, double account1);
+    void printmoney();
+    void deposit(double t);
+    void withdraw(double c);
+    private:
+    int age;
+    double account;
+    const char* credit;const char* name;const char* sex;
+};
+void Account::init(const char* credit1,const char* name1,const char* sex1,int age1, double account1)
+{
+    if(account1*100>int(account1*100)) { cout<<"您输入的金额不合法"<<endl; account=account1=0.0; }
+    else  account=account1;
+    credit=credit1;
+    name=name1;
+    sex=sex1;
+    age=age1;
+}
+void Account:: printmoney()
+{
+    cout<<fixed<<setprecision(2);
+    cout<<name<<"的存款为"<<account<<endl;
+}
+void Account::deposit(double t)
+{
+    if(t*100>int(t*100)) cout<<"您输入的金额不合法"<<endl;
+    else account+=t;
+}
+void Account::withdraw(double c)
+{
+    if(c*100>int(c*100)) cout<<"您输入的金额不合法"<<endl;
+    else if(c>account) cout<<"您的存款金额不足"<<endl;
+    else if(c<=account) account-=c;
+}
+int  main()
+{
+        Account  tom;
+        tom.init("32020320011001876X","Tom  Black","男",19,2000.89);
+        tom.printmoney();//输出：Tom  Black的存款为2000.89
+        tom.deposit(89.471);//输出：您输入的金额不合法
+        tom.printmoney();//输出：Tom  Black的存款为2000.89
+        tom.deposit(10000);
+        tom.printmoney();//输出：Tom  Black的存款为12000.89
+        tom.withdraw(10001);
+        tom.printmoney();//输出：Tom  Black的存款为1999.89
+        tom.withdraw(10000.123);//输出：您输入的金额不合法
+        tom.printmoney();//输出：Tom  Black的存款为1999.89
+        tom.withdraw(10000.9);//输出：您的存款金额不足
+        tom.printmoney();//输出：Tom  Black的存款为1999.89
+        Account  jerry;
+        jerry.init("320203200910116569",  "Jerry  Black",  "女",  11,  100.956);//输出：您输入的金额不合法
+        jerry.printmoney();//输出：Jerry  Black的存款为0.00
+}
