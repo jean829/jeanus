@@ -1,0 +1,17 @@
+#include <iostream>
+using namespace std;
+int jisuan(int cnt,int x, int y)//cnt汽水数，x空瓶，y瓶盖
+{
+    x%=2;x+=cnt;
+    y%=3;y+=cnt;
+    if(x<2&&y<3)return cnt;
+    else return jisuan(x/2+y/3,x,y)+cnt;
+}
+int main()
+{
+    int x,k;
+    cin>>x;
+    k=jisuan(x,0,0);
+    cout<<k<<endl;
+    return 0;
+}
