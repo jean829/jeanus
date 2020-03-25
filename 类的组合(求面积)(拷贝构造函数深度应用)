@@ -1,0 +1,84 @@
+#include<iostream>
+using namespace std;
+class CRectangle;
+class CPoint
+{
+public:
+    CPoint(int i1=0,int j1=0);
+    CPoint(CPoint& p);
+    friend class CRectangle;
+private:
+    int i,j;
+};
+CPoint::CPoint(int i1,int j1)
+{
+     i=i1;j=j1;
+    cout<<"CPoint contstructor with default value(0,0) is called."<<endl;
+}
+CPoint::CPoint(CPoint& p)
+{
+    i=p.i;
+    j=p.j;
+    cout<<"CPoint copy contstructor is called."<<endl;
+}
+class CRectangle
+{
+public:
+    CRectangle();
+    CRectangle(CPoint k1,CPoint n1);
+    CRectangle(CRectangle& p);
+    CRectangle(int a1,int b1, int c1, int d1);
+    int GetArea();
+    CPoint k,n;
+    private:
+    int a,b,c,d;
+};
+CRectangle::CRectangle()
+{
+    cout<<"CRectangle default contstructor is called."<<endl;
+}
+CRectangle::CRectangle(CPoint k1,CPoint n1):k(k1),n(n1)
+ {
+         a=k.i;b=k.j;c=n.i;d=n.j;
+      cout<<"CRectangle contstructor with (CPoint,CPoint) is called."<<endl;
+ }
+CRectangle::CRectangle(int a1 ,int b1, int c1 , int d1)
+{
+    a=a1;b=b1;c=c1;d=d1;
+    cout<<"CRectangle contstructor with (int,int,int,int) is called."<<endl;
+}
+CRectangle::CRectangle(CRectangle &m):k(m.k),n(m.n)
+{
+    a=m.k.i;b=m.k.j;c=m.n.i;d=m.n.j;
+    cout<<"CRectangle copy contstructor is called."<<endl;
+}
+int CRectangle::GetArea()
+{
+    if((d-b)*(c-a)>0)
+    return (d-b)*(c-a);
+    else
+        return (d-b)*(a-c);
+}
+int  main()
+{
+        int  a=1,  b=1,  c=6,  d=11;
+        cout<<"#  Define  p1  ######"<<endl;
+        CPoint  p1;
+        cout<<"#  Define  p2  ######"<<endl;
+        CPoint  p2(10,20);
+        cout<<"#  Define  rect1  ######"<<endl;
+        CRectangle  rect1;
+        cout<<"#  Define  rect2  ######"<<endl;
+        CRectangle  rect2(p1,  p2);
+        cout<<"#  Define  rect3  ######"<<endl;
+        CRectangle  rect3(a,  b,  c,  d);
+        cout<<"#  Define  rect4  ######"<<endl;
+        CRectangle  rect4(rect2);
+        cout<<"#  Calculate  area  ######"<<endl;
+        cout  <<  "rect1面积为"  <<  rect1.GetArea()  <<  endl;
+        cout  <<  "rect2面积为"  <<  rect2.GetArea()  <<  endl;
+        cout  <<  "rect3面积为"  <<  rect3.GetArea()  <<  endl;
+        cout  <<  "rect4面积为"  <<  rect4.GetArea()  <<  endl;
+        system("pause");
+        return  0;
+}
