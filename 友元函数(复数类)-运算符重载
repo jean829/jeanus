@@ -1,0 +1,88 @@
+#include  <iostream>
+using  namespace  std;
+class Complex
+{
+public:
+    Complex(double a=0.0,int b=0);
+    void print();
+    friend Complex operator +(Complex a, Complex b);
+    friend Complex operator -(Complex a, Complex b);
+    friend Complex operator +(Complex a, int b);
+    friend Complex operator -(Complex a, double b);
+    friend Complex operator -(double a, Complex b);
+private:
+    double real;
+    int imag;
+};
+Complex::Complex(double a,int b)
+{
+    real=a;imag=b;
+}
+Complex operator +(Complex a, Complex b)
+{
+    Complex c;
+    c.real=a.real+b.real;
+    c.imag=a.imag+b.imag;
+    return Complex(c.real,c.imag);
+}
+Complex operator -(Complex a, Complex b)
+{
+        Complex c;
+        c.real=a.real-b.real;
+        c.imag=a.imag-b.imag;
+        return Complex(c.real,c.imag);
+}
+Complex operator +(Complex a, int b)
+{
+    Complex c;
+    c.real=a.real+b;
+    c.imag=a.imag;
+    return Complex(c.real,c.imag);
+}
+Complex operator -(Complex a, double b)
+{
+    Complex c;
+    c.real=a.real-b;
+    c.imag=a.imag;
+    return Complex(c.real,c.imag);
+}
+Complex operator -(double a, Complex b)
+{
+    Complex c;
+    c.real=a-b.real;
+    c.imag=-b.imag;
+    return Complex(c.real,c.imag);
+}
+void Complex::print()
+{
+    cout<<"("<<real<<")"<<"+""("<<imag<<"i)";
+}
+int  main()
+{
+        Complex  a(3,4),b(1,-1),c;
+        c=a+b;
+        cout<<"a+b=";
+        c.print();
+        cout<<endl;
+        c=a-b;
+        cout<<"a-b=";
+        c.print();
+        cout<<endl;
+        c=a+100;
+        cout<<"a+100=";
+        c.print();
+        cout<<endl;
+        c=a-2.5;
+        cout<<"a-2.5=";
+        c.print();
+        cout<<endl;
+        c=100+a;
+        cout<<"100+a=";
+        c.print();
+        cout<<endl;
+        c=2.5-a;
+        cout<<"2.5-a=";
+        c.print();
+        cout<<endl;
+        return  0;
+}
