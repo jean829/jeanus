@@ -1,0 +1,49 @@
+#include  <iostream>
+using  namespace  std;
+class Point
+{
+public:
+    Point(int a,int b);
+    Point& operator ++();
+    Point operator ++(int);
+    int Getm_x() const;
+    int Getm_y() const;
+private:
+    int m_x,m_y;
+};
+Point::Point(int a,int b)
+{
+    m_x=a;m_y=b;
+}
+Point& Point::operator ++()
+{
+    m_x++;
+    m_y++;
+    return *this;
+}
+Point Point::operator ++(int)
+{
+    Point old=*this;
+    ++(*this);
+    return old;
+}
+ostream &operator<<(ostream&s,const Point&z)
+{
+    return s<<'('<<z.Getm_x()<<','<<z.Getm_y()<<')'<<endl;
+}
+int Point::Getm_x() const
+{
+    return m_x;
+}
+int Point::Getm_y() const
+{
+    return m_y;
+}
+int  main()
+{
+        Point  a(1,3);
+        cout<<a;
+        cout<<a++;
+        cout<<++a;
+        return  0;
+}
