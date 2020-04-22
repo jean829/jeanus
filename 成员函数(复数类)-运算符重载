@@ -1,0 +1,73 @@
+#include  <iostream>
+using  namespace  std;
+class Complex
+{
+public:
+    Complex(double a=0.0,int b=0);
+    Complex operator +(Complex);
+    Complex operator -(Complex);
+    Complex operator +(int a);
+    Complex operator -(double b);
+    void print();
+private:
+    double aa;
+    int bb;
+};
+Complex::Complex(double a,int b)
+{
+    aa=a;bb=b;
+}
+Complex Complex:: operator+(Complex c1)
+{
+    Complex c;
+    c.aa=aa+c1.aa;
+    c.bb=bb+c1.bb;
+    return Complex(c.aa,c.bb);
+}
+Complex Complex:: operator-(Complex c1)
+{
+    Complex c;
+    c.aa=aa-c1.aa;
+    c.bb=bb-c1.bb;
+    return Complex(c.aa,c.bb);
+}
+Complex Complex:: operator+(int a)
+{
+    Complex c;
+    c.aa=aa+a;
+    c.bb=bb;
+    return Complex(c.aa,c.bb);
+}
+Complex Complex::operator-(double a)
+{
+    Complex c;
+    c.aa=aa-a;
+    c.bb=bb;
+    return Complex(c.aa,c.bb);
+}
+void Complex::print()
+{
+    cout<<aa<<"+"<<bb<<"i";
+}
+int  main()
+{
+        Complex  a(3,4),b(1,-1),c;
+        c=a+b;
+        cout<<"a+b=";
+        c.print();
+        cout<<endl;
+        c=a-b;
+        cout<<"a-b=";
+        c.print();
+        cout<<endl;
+        c=a+100;
+        cout<<"a+100=";
+        c.print();
+        cout<<endl;
+        c=a-2.5;
+        cout<<"a-2.5=";
+        c.print();
+        cout<<endl;
+
+        return  0;
+}
