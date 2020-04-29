@@ -1,0 +1,60 @@
+#include <iostream>
+#include<fstream>
+#include<cstring>
+#include<vector>
+#include <sstream>
+using namespace std;
+int main()
+{
+    ifstream a("a.txt");
+    vector<string>str;
+    vector<double>num;
+    string temp;
+    string str_temp;
+    getline(a,str_temp);
+    int m=0;
+    for(int i=0;i<str_temp.length();i++)
+    {
+        if(str_temp[i]==32)
+        {
+            temp=str_temp.substr(m,i-m);
+            str.push_back(temp);
+            m=i+1;
+        }
+    }
+    str.push_back(str_temp.substr(m));
+    for(int i=0;i<str.size();i++)
+    {
+        double n;
+        stringstream s;
+        s<<str[i];
+        s>> n;
+        num.push_back(n);
+    }
+    
+    int i,j,k = 0;
+    double semp;
+    for(i=0;i<num.size()-1;i++)
+    {
+        semp=num[i];
+        k=i;
+        for(j=i+1;j<num.size();j++)
+        {
+            if(num[j]<semp)
+            {
+                semp=num[j];
+                k=j;
+            }
+        }
+        if(k!=i)  {num[k]=num[i]; num[i]=semp; }
+    }
+    ofstream b("b.txt");
+    for(i=0;i<str.size();i++)
+    {
+        b<<num[i];
+        b<<" ";
+    }
+    a.close();
+    b.close();
+    return 0;
+}
