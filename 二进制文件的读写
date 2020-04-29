@@ -1,0 +1,31 @@
+#include <iostream>
+#include<fstream>
+using namespace std;
+int main()
+{
+    struct student
+    {
+        short int stu_id,score;
+    };
+    int n,i;
+    std::cin>>n;
+    student *a=new student[n];
+    for(i=0;i<n;i++)
+    {
+        std::cin>>a[i].stu_id>>a[i].score;
+    }
+    ofstream o("out.txt",ios::out|ios::binary);
+    o.write((char *)a,n);
+    o.close();
+    student *b=new student[n];
+    ifstream o1("out.txt",ios::in|ios::binary);
+    for(i=0;i<n;i++)
+    {
+        o1.read((char *)b+i,1);
+    }
+    o1.close();
+    ofstream o2("out.txt",ios::ate);
+    o2.write((char *)b,n);
+    o2.close();
+    return 0;
+}
