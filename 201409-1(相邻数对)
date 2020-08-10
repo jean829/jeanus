@@ -1,0 +1,25 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+    int N,i,j,a[1010],step,k=0;
+    cin>>N;
+    for(i=0;i<N;i++)
+        cin>>a[i];
+    for(i=0;i<N-1;i++)
+        for(j=i+1;j<N;j++)
+        {
+            if(a[i]>a[j])
+            {
+            step=a[i];
+            a[i]=a[j];
+            a[j]=step;
+            }
+        }
+    for(i=0;i<N-1;i++)
+    {
+        if(a[i]==a[i+1]-1) k++;
+    }
+    cout<<k;
+    return 0;
+}
