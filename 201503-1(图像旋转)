@@ -1,0 +1,27 @@
+#include <iostream>
+using namespace std;
+int a[1010][1010],b[1010][1010];
+int main()
+{
+    int m,n,i,j;
+    cin>>n>>m;
+    for(i=0;i<n;i++)
+    {
+        for(j=0;j<m;j++)
+        {
+        cin>>a[i][j];
+            b[m-j-1][i]=a[i][j];
+        }
+    }
+    for(i=0;i<m;i++)
+    {
+    for(j=0;j<n;j++)
+      {
+          if(j!=0) cout<<' ';
+          cout<<b[i][j];
+      }
+        if(i<m-1)
+        cout<<endl;
+    }
+    return 0;
+}
