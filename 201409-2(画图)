@@ -1,0 +1,31 @@
+#include <iostream>
+using namespace std;
+int a[10010][5],b[110][110]={0};
+int main()
+{
+    int n,i,j,m,k,s=0;
+    cin>>n;
+    //输入n组坐标2
+    for(i=0;i<n;i++)
+    {
+        for(j=0;j<4;j++)
+            cin>>a[i][j];
+    }
+    for(i=0;i<n;i++)//一共n行
+    {
+        //开始计算每一行的坐标一共占据多少个正方形
+        for(m=a[i][0];m<a[i][2];m++)
+        {
+            for(k=a[i][1];k<a[i][3];k++)
+            b[m][k]=1;//以正方形左下角坐标=1来表示该正方形被涂
+        }
+    }
+    //计算被涂正方形
+    for(i=0;i<100;i++)
+        for(j=0;j<100;j++)
+        {
+            if(b[i][j]==1) s++;
+        }
+    cout<<s;
+    return 0;
+}
