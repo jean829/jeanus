@@ -1,0 +1,66 @@
+#include<iostream>
+using namespace std;
+int main()
+{
+    int a[16][10];  //最后一排下面都赋值1，最下层为0时会穿透棋盘。
+    int b[4][4];
+    int zuo[4][2];  //存储四个1所在的坐标（因为是横纵坐标所以设为二维数组）。
+    int s=0;  //s表示第几个1（共四个）
+    int m;
+    //输入棋盘
+    for(int i=0;i<15;++i)
+        for(int j=0;j<10;++j)
+        {
+            cin>>a[i][j];
+        }
+    //输入棋盘结束
+    for(int i=0;i<10;++i)//在最后一行下面都设为1
+        a[15][i]=1;
+    //输入板块，记录板块中1的横纵坐标
+    for(int i=0;i<4;++i)
+        for(int j=0;j<4;++j)
+        {
+            cin>>b[i][j];
+            if(b[i][j]==1)  // 就是此处，用于记录四个坐标，我一开始思路因为少了一这一步，所以很尴尬！
+            {
+                zuo[s][0]=i;//记录四个坐标在第几行第几列
+                zuo[s][1]=j;//s为第几个1
+                ++s;
+            }
+        }
+    //输入板块结束
+    cin>>m;//输入板块从第几列开始
+    bool flag=false;  //停止标志位，打断循环
+    int stop=0;
+     for(int i=0;i<15;i++)
+    {
+        if(flag)
+            break;
+        else
+        {
+            for(int j=0 ;j<4;++j)
+            {
+                if(a[stop +zuo [j][0]][m+zuo[j][1]-1]==1)  //如果相对的位置上有1了。那么就退一步，并且置位flag进行循环退出。
+                {
+                    flag=true;
+                    --stop;
+                }
+            }
+            ++stop;
+        }
+    }
+    --stop;//for循环后面有++stop，为求准确的stop
+    
+    for(int i=0;i<4;++i)  //刷新棋盘
+        a[stop+zuo[i][0]][m+zuo[i][1]-1]=1;
+    
+    for(int i=0;i<15;++i)
+    {
+        for(int j=0;j<10;++j)
+        {
+            cout<<a[i][j]<<" ";
+        }
+        cout<<endl;
+    }
+    return 0;
+}
