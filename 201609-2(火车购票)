@@ -1,0 +1,57 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+    int b[20]={5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5},n,i=0,j=0;
+    //b[i]表示每一行的空座位数，n是需要购置几次电影票
+    cin>>n;
+    int c[104]={0},x;//c[i]为每次购置的电影票票数
+    for(i=0;i<n;i++)
+    {
+        cin>>x;
+        c[i]=x;
+    }
+    int p[104][5]={0};//记录n（n<=20）次购票的位置
+    for(i=0;i<n;i++)
+    {
+        int s,k=0,l=0;//记录第几个座位（0-100）
+        for(j=0;j<20;j++)
+        {
+            if(c[i]<=b[j])
+            {
+                    s=5*j+(5-b[j])+1;
+                    for(int r=0;r<c[i];r++)
+                    p[i][r]=s++;//记录第i次购的c[i]张票的位置
+                    b[j]-=c[i];//这一行的空座位减少
+                    k=1;
+                    break;//每次找符合电影票数量的行数要从头开始
+            }
+        }
+        //新加
+        if(k==0)//当没有连排座位时
+        {
+            for(j=0;j<20;j++)
+            {
+                while(b[j])
+                {
+                    s=j*5+(5-b[j])+1;
+                    p[i][l++]=s;
+                    b[j]--;
+                }
+                if(c[i]==l) break;
+            }
+        }
+        //新加
+    }
+    for(int i=0;i<n;i++)
+    {
+        for(int j=0;j<c[i];j++)
+        {
+        cout<<p[i][j];
+            if(j!=c[i]-1) cout<<' ';
+        }
+        if(i!=n-1)
+        cout<<endl;
+    }
+    return 0;
+}
