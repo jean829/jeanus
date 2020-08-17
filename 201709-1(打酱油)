@@ -1,0 +1,14 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+    int N,a,s=0;
+    cin>>N;a=N/10;
+    if(a%5==0) s=a+2*a/5;
+    else
+    {
+        s=a+2*(a/5)+(a-5*(a/5))/3;
+    }
+    cout<<s;
+    return 0;
+}
