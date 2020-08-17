@@ -1,0 +1,90 @@
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+using namespace std;
+typedef struct Class
+{
+    int key;
+    int start;
+    int en;
+}Class;
+int key,tea;
+Class cStart[1001],cEnd[1001];
+int k[1000];//i位置上是k[i]号钥匙，k[i]=0表示i位置没有钥匙
+void init()
+{
+    cin>>key>>tea;
+    for(int i=1;i<=tea;i++)
+    {
+       cin>>cStart[i].key>>cStart[i].start>>cStart[i].en;
+        cStart[i].en+=cStart[i].start;//结束时间
+        cEnd[i]=cStart[i];
+    }
+    for(int i=1;i<=key;i++)
+    {
+        k[i]=i;
+    }
+}
+//按拿钥匙时间由小到大排序，次钥匙号码
+bool startTime(Class a, Class b)
+{
+    if(a.start==b.start) return a.key<b.key;
+    return a.start<b.start;
+}
+//按还钥匙时间从小到大排序，次钥匙号码
+bool endTime(Class a, Class b)
+{
+    if(a.en==b.en) return a.key<b.key;
+    return a.en<b.en;
+}
+//拿钥匙
+void getKey(Class x)
+{
+    for(int i=1;i<=key;i++)
+    {
+        if(k[i]==x.key)
+        {
+            k[i]=0;
+            return;
+        }
+    }
+}
+//还钥匙
+void putKey(Class x)
+{
+    for(int i=1;i<=key;i++)
+    {
+        if(k[i]==0)
+        {
+            k[i] = x.key;
+            return;
+        }
+    }
+}
+void solve()
+{
+    for(int i=cStart[1].start;i<=cEnd[tea].en;i++)
+    {
+        for(int j=1;j<=tea;j++)
+        {
+            if(cEnd[j].en==i)
+            {
+                putKey(cEnd[j]);
+            }
+            if(cStart[j].start==i)
+            {
+                getKey(cStart[j]);
+            }
+        }
+    }
+}
+int main()
+{
+    init();
+    sort(cStart+1,cStart+tea+1,startTime);
+    sort(cEnd+1,cEnd+tea+1,endTime);
+    solve();
+    for(int i=1;i<=key;i++)
+        cout<<k[i]<<' ';
+    return 0;
+}
