@@ -1,0 +1,28 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+    int n,i,j,a[1004],min;
+    cin>>n;
+    for(i=0;i<n;i++)
+        cin>>a[i];
+    for(j=0;j<n-1;j++)
+        for(i=j+1;i<n;i++)
+        {
+            if(a[j]>a[i])
+            {
+                int step;
+                step=a[i];
+                a[i]=a[j];
+                a[j]=step;
+            }
+        }
+    min=a[1]-a[0];
+    for(i=1;i<n-1;i++)
+        for(j=i+1;j<n;j++)
+        {
+            if(a[j]-a[i]<min) min=a[j]-a[i];
+        }
+    cout<<min;
+    return 0;
+}
