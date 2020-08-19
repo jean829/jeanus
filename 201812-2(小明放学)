@@ -1,0 +1,25 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+    long long r,y,g,n,s=0;
+    cin>>r>>y>>g;
+    cin>>n;
+    long long int p,q;
+    //0≤t<r 红灯,r≤t<(r+g) 绿灯,(r+g)≤t<(r+g+y) 黄灯
+    //周期函数
+    for(int i=0;i<n;i++)
+    {
+        long long x,u;
+        cin>>x>>u;
+        p=r+g;q=r+y+g;
+        if(x==0) {s=s+u;continue;}
+        else if(x==1) u=(r-u+s)%q;
+        else if(x==2) u=(q-u+s)%q;
+        else if(x==3) u=(p-u+s)%q;
+        if(u>=0&&u<r) s=s+r-u;//红灯
+        else if(u>=p) s=s+q-u+r;//黄灯
+    }
+    cout<<s;
+    return 0;
+}
