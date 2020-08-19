@@ -1,0 +1,51 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+    int n,L,t,a[102],b[102]={0},j;
+    cin>>n>>L>>t;
+    int i;
+    for(i=0;i<n;i++)
+    {
+        cin>>a[i];
+    }
+    for(i=0;i<n;i++)//把每个小球原来的位置表示出来(标出原来的第i个小球第几大)
+    {
+        int s=0;
+        for(j=0;j<n;j++)
+    if(i!=j)
+    {
+        if(a[j]<a[i]) {s++; }
+    }
+        b[i]=s;
+    }
+    for(i=0;i<n;i++)//计算小球们的最终坐标
+    {
+        int t1;
+        t1=t;
+        if(a[i]+t1<=L) a[i]=a[i]+t1;
+        else
+        {
+            t1=t1-(L-a[i]); a[i]=L;
+            if(t1/L%2==0) a[i]=L-t1%L;
+            else a[i]=t1%L;
+        }
+    }
+    for(i=0;i<n-1;i++)//把小球最终坐标排序
+    {
+        int min=i;
+        for(int j=i+1;j<n;j++)
+        {
+            if(a[j]<a[min]) min=j;
+        }
+        int step=a[min];
+        a[min]=a[i];
+        a[i]=step;
+    }
+    for(i=0;i<n;i++)
+    {
+        cout<<a[b[i]];//第i个第b[i]大
+        if(i!=n-1) cout<<' ';
+    }
+    return 0;
+}
