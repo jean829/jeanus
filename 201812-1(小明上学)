@@ -9,11 +9,11 @@ int main()
     int s=0;//统计时间
     for(int i=0;i<n;i++)
     {
-        int x,y;
-        cin>>x>>y;
-        if(x==0) s=s+y;
-        else if(x==1) s=s+y;
-        else if(x==2) s=s+y+r;
+        int x,u;
+        cin>>x>>u;
+        if(x==0) s=s+u;
+        else if(x==1) s=s+u;
+        else if(x==2) s=s+u+r;
         else continue;
     }
     cout<<s;
