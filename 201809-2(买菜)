@@ -1,0 +1,29 @@
+#include <iostream>
+using namespace std;
+int a[1000003]={0},b[1000003]={0};
+int main()
+{
+    int n,max=0,s=0;
+    cin>>n;
+    for(int i=0;i<n;i++)
+    {
+        int x,y;
+        cin>>x>>y;
+        for(int j=x;j<y;j++)
+            a[j]=1;
+        if(i==n-1) max=y;
+    }
+    for(int i=0;i<n;i++)
+    {
+        int x,y;
+        cin>>x>>y;
+        for(int j=x;j<y;j++)
+            b[j]=1;
+    }
+    for(int i=1;i<=max;i++)
+    {
+        if(b[i]==1&&a[i]==1) s++;
+    }
+    cout<<s;
+    return 0;
+}
