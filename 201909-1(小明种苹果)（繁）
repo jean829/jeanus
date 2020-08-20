@@ -1,0 +1,29 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+    int N,M,s=0;
+    cin>>N>>M;
+    int a[N];
+    for(int i=0;i<N;i++)
+    {
+        a[i]=0;
+        int t;cin>>t;s=s+t;//计算果实总数（未疏果前）
+        for(int j=0;j<M;j++)
+        {
+            int x;
+            cin>>x;
+            a[i]=a[i]-x;//计算每次疏果个数
+            s=s+x;//计算蔬果后
+        }
+    }
+    
+    int max=0;
+        for(int j=1;j<N;j++)
+            if(a[j]>a[max])//找出最大疏果值
+            {
+                max=j;
+            }
+    cout<<s<<' '<<max+1<<' '<<a[max];
+    return 0;
+}
