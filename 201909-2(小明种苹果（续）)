@@ -1,0 +1,37 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+    int N,S=0,k=0;cin>>N;//N为苹果树棵树，S树下最终剩下的苹果，k为有几棵树自己掉落苹果
+    int a[N+5];//a[N]记录N个苹果树上有没有掉落果子，掉的话赋值为1
+    for(int i=0;i<N+5;i++)//a[N]初始值为0
+        a[i]=0;
+    for(int i=0;i<N;i++)//N棵树
+    {
+        int s=0,x;//s记录第i颗树上剩余的果子
+        int n;cin>>n;
+        for(int j=0;j<n;j++)//
+        {
+            cin>>x;
+            if(j==0) s=s+x;//j=0时是疏果前的果子数量
+            else
+            {
+                if(x<=0) s=s+x;//记录疏果后的数量
+                else
+                {
+                    if(x>0&&s!=x) {a[i]++;s=x;}//疏果后的数量如果和当时计算的不同，则有果子自己掉落
+                }
+            }
+        }
+        S=s+S;
+    }
+    for(int i=0;i<N;i++)
+        if(a[i]!=0) k++;
+    int p=0;//记录有几个连续三棵苹果树（自己掉落）
+    if(a[N-2]!=0&&a[N-1]!=0&&a[0]!=0) p++;
+    if(a[N-1]!=0&&a[0]!=0&&a[1]!=0) p++;
+    for(int i=1;i<N;i++)
+            if(a[i-1]!=0&&a[i]!=0&&a[i+1]!=0) p++;
+    cout<<S<<' '<<k<<' '<<p;
+    return 0;
+}
