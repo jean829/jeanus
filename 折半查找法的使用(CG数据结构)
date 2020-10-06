@@ -1,0 +1,60 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+    int N,k;
+    cin>>N;
+    int a[N],b[N/2],c[N/2];
+    for(int i=0;i<N/2;i++)
+    {
+        b[i]=0;c[i]=0;
+    }
+    for(int i=0;i<N;i++)
+    {
+        cin>>a[i];
+        if(cin.get()==',') continue;
+        else break;
+    }
+    cin>>k;
+    int mid=0,flag=0,l=0,n=N;
+    while(mid!=N-1&&mid!=n)
+    {
+        mid=(n-mid)/2+mid;
+        b[l]=a[mid];
+        c[l]=mid;
+        if(a[mid]<k)
+        {
+            l++;
+        }
+        else if(a[mid]>k)
+        {
+            n=mid-1;
+            mid=c[l-1];
+            l++;
+        }
+        else if(a[mid]==k)
+        {
+            flag=1;
+            break;
+        }
+    }
+    if(flag==1)
+    {
+        cout<<c[l]<<endl;
+        for(int i=0;b[i]>0;i++)
+        {
+            if(i!=0) cout<<',';
+        cout<<b[i];
+        }
+    }
+    else
+    {
+        cout<<"no"<<endl;
+        for(int i=0;b[i]>0;i++)
+        {
+            if(i!=0) cout<<',';
+        cout<<b[i];
+        }
+    }
+    return 0;
+}
