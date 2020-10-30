@@ -1,0 +1,422 @@
+#include <iostream>
+#include<cstring>
+#include<stack>
+using namespace std;
+char t[100];
+char r[100];
+char priority[7][7]={
+    {'>','>','<','<','<','>','>'},
+    {'>','>','<','<','<','>','>'},
+    {'>','>','>','>','<','>','>'},
+    {'>','>','>','>','<','>','>'},
+    {'<','<','<','<','<','=','0'},   //‘=’左右括号相遇，括号内运算已完成；0：语法错误
+    {'>','>','>','>','0','>','>'},
+    {'<','<','<','<','<','0','='}    //'='表达式求值完毕
+    };
+    
+char Procede(char a,char b)//判断ab运算符优先关系
+{
+    int i=0,j=0;
+    switch(a)
+    {
+        case'+':i=0;break;
+        case'-':i=1;break;
+        case'*':i=2;break;
+        case'/':i=3;break;
+        case'(':i=4;break;
+        case')':i=5;break;
+        case'#':i=6;break;   //#:结束符
+    }
+    switch(b)
+    {
+        case'+':j=0;break;
+        case'-':j=1;break;
+        case'*':j=2;break;
+        case'/':j=3;break;
+        case'(':j=4;break;
+        case')':j=5;break;
+        case'#':j=6;break;
+    }
+    return priority[i][j];
+}
+int Operate(int m,int n,char x)//计算函数
+{
+    if(x=='+')
+    return m+n;
+    if(x=='-')
+    return n-m;
+    if(x=='*')
+    return m*n;
+    if(x=='/')
+    return n/m;
+    return 0;
+}
+void beforechange(char ss[100])//变为前缀表达式
+{
+    stack <char> OUT;
+    stack <char> CHAR;
+    char s[100];
+    int l=0;
+    while(ss[l]!='#')
+    {
+        s[l]=ss[l];
+        l++;
+    }
+    s[l]='#';
+    int i=0;
+    while(s[i]!='#') i++;i--;//找到s的末端
+    while(i>=0)
+    {
+        int x=0;
+        if(s[i]>='0'&&s[i]<='9')
+        {
+        while(s[i]>='0'&&s[i]<='9')
+        {
+            x=x*10+s[i]-'0';
+            i--;
+        }
+        OUT.push(x+'0');
+        }
+        else
+        {
+            if((s[i]=='*')||(s[i]=='/'))
+            {
+                if(CHAR.size())
+                {
+                    if(Procede(CHAR.top(),s[i])=='<')
+                        CHAR.push(s[i]);
+                }
+                else CHAR.push(s[i]);
+                i--;
+            }
+            else if((s[i]=='+')||(s[i]=='-'))
+            {
+                if(CHAR.size())
+                {
+                    if(CHAR.top()==')')
+                        CHAR.push(s[i]);
+                        else
+                    {
+                    if(Procede(CHAR.top(),s[i])=='<')
+                     CHAR.push(s[i]);
+                    else
+                    {
+                        OUT.push(CHAR.top());
+                        CHAR.pop();
+                        CHAR.push(s[i]);
+                    }
+                    }
+                }
+                i--;
+            }
+            else if(s[i]==')')
+            {
+            CHAR.push(s[i]);
+                i--;
+            }
+            else if(s[i]=='(')
+            {
+                while(CHAR.top()!=')')
+                {
+                    if(CHAR.top()!='('&&CHAR.top()!=')')
+                    {
+                    OUT.push(CHAR.top());
+                        CHAR.pop();
+                    }
+                    else
+                    CHAR.pop();
+                }
+                CHAR.pop();
+                i--;
+            }
+        }
+    }
+    while(CHAR.size())
+    {
+        OUT.push(CHAR.top());
+        CHAR.pop();
+    }
+    int q=0;
+    while(OUT.size())
+    {
+        cout<<OUT.top()<<' ';
+        t[q]=OUT.top();t[++q]=' ';q++;
+        OUT.pop();
+    }
+    t[q-1]='#';
+}
+void afterchange(char ss[100])//变为后缀表达式
+{
+    stack <char> OUT;//存输出
+    stack <char> CHAR;//存运算符
+    char s[100];
+    int l=0;
+    while(ss[l]!='#')
+    {
+        s[l]=ss[l];
+        l++;
+    }
+    s[l]='#';
+    int i=0;
+    while(s[i]!='#')
+    {
+        int x=0,flag=0;
+        if(s[i]>='0'&&s[i]<='9')
+        {
+        while(s[i]>='0'&&s[i]<='9')
+        {
+            s[i]=s[i]-'0';
+            x=x*10+s[i];
+            i++;
+        }
+        OUT.push(x+'0');
+        }
+        else
+        {
+            if(s[i]=='(')
+            {
+            CHAR.push(s[i]);
+                i++;
+                flag=1;
+            }
+            else if(s[i]==')')
+            {
+                while(CHAR.top()!='(')
+                {
+                    if(CHAR.top()!='('&&CHAR.top()!=')')
+                    {
+                    OUT.push(CHAR.top());
+                        CHAR.pop();
+                    }
+                    else
+                    CHAR.pop();
+                }
+                CHAR.pop();
+                i++;
+            }
+            else if((s[i]=='*')||(s[i]=='/'))
+            {
+                if(CHAR.size())
+                {
+                  if(CHAR.top()!='#')
+                  {
+                      if(CHAR.top()=='*'||CHAR.top()=='/')
+                      {
+                          OUT.push(CHAR.top());
+                          CHAR.pop();
+                          CHAR.push(s[i]);
+                      }
+                    else if(Procede(CHAR.top(),s[i])=='<')
+                        CHAR.push(s[i]);
+                  }
+                  else CHAR.push(s[i]);
+                }
+                else CHAR.push(s[i]);
+                i++;
+            }
+            else if((s[i]=='+')||(s[i]=='-'))
+            {
+                if(CHAR.size())
+                {
+                    if(Procede(CHAR.top(),s[i])=='<')
+                     CHAR.push(s[i]);
+                    else
+                    {
+                        OUT.push(CHAR.top());
+                        CHAR.pop();
+                        CHAR.push(s[i]);
+                    }
+                }
+                i++;
+            }
+        }
+    }
+    while(CHAR.size())
+    {
+        OUT.push(CHAR.top());
+        CHAR.pop();
+    }
+    stack <char> OUTO;
+    while(OUT.size())
+    {
+        OUTO.push(OUT.top());
+        OUT.pop();
+    }
+    int q=0;
+    while(OUTO.size())
+    {
+        cout<<OUTO.top()<<' ';
+        r[q]=OUTO.top();r[++q]=' ';q++;
+        OUTO.pop();
+    }
+    r[q-1]='#';
+}
+void ibefore()//前缀表达式求值
+{
+    stack <int> OPND;//存字符
+    stack <char> OPTR;//存运算符
+    OPTR.push('#');
+    char s[100];
+    int l=0;
+    while(t[l]!='#')
+    {
+        s[l]=t[l];
+        l++;
+    }
+    s[l]='#';
+    int i=0;
+    while(s[i]!='#') i++;i--;char a=s[i];
+    while(i>=0)
+    {
+        int x=0,flag=0;
+        if(a>='0'&&a<='9')
+        {
+            flag=0;
+            while(a>='0'&&a<='9')
+            {
+                flag++;
+                i--;
+                a=s[i];
+            }
+            int j=i+1;
+            while(flag) {s[j]=s[j]-'0'; x=s[j]+x*10;j=j+1;flag--;}
+            OPND.push(x);
+        }
+        else
+        {
+            if(a==' ') { i--;a=s[i]; continue;}
+            else
+            {
+            int m,n;
+            n=OPND.top();
+            OPND.pop();
+            m=OPND.top();
+            OPND.pop();
+            OPND.push(Operate(m,n,a));
+            i--;
+                a=s[i];
+            }
+        }
+    }
+    cout<<OPND.top();
+}
+void mid(char ss[100])//中缀表达式求值
+{
+    stack <int> OPND;//存字符
+    stack <char> OPTR;//存运算符
+    OPTR.push('#');
+    char s[100];
+    int i=0;
+    while(ss[i]!='#')
+    {
+        s[i]=ss[i];
+        i++;
+    }
+    s[i]='#';
+    int j=1;char a=s[0];
+    while(a!='#'||OPTR.top()!='#')
+    {
+        int x=0;
+        if(a>='0'&&a<='9')
+        {
+            while(a>='0'&&a<='9')
+            {
+                x=x*10+a-'0';
+                a=s[j++];
+            }
+            OPND.push(x);
+        }
+        else
+        {
+            switch(Procede(OPTR.top(),a))
+            {
+                case'<':
+                    OPTR.push(a);
+                    a=s[j++];
+                    break;
+                case'=':
+                    OPTR.pop();
+                    a=s[j++];
+                    break;
+                case'>':
+                    char p=OPTR.top();OPTR.pop();
+                    int m=OPND.top();OPND.pop();
+                    int n=OPND.top();OPND.pop();
+                    OPND.push(Operate(m, n, p));
+                    break;
+            }
+        }
+    }
+    cout<<OPND.top();
+}
+void iafter()//后缀表达式求值
+{
+    stack <int> OPND;//存字符
+    stack <char> OPTR;//存运算符
+    OPTR.push('#');
+    char s[100];
+    int l=0;
+    while(r[l]!='#')
+    {
+        s[l]=r[l];
+        l++;
+    }
+    s[l]='#';
+    int i=0;
+    while(s[i]!='#') i++;i--;int j=0;char a=s[j];
+    while(j<=i)
+    {
+        int x=0,flag=0;
+        if(a>='0'&&a<='9')
+        {
+            flag=0;
+            while(a>='0'&&a<='9')
+            {
+                flag++;
+                j++;
+                a=s[j];
+            }
+            int p=j-1;
+            while(flag) {s[p]=s[p]-'0'; x=s[p]+x*10;p=p+1;flag--;}
+            OPND.push(x);
+        }
+        else
+        {
+            if(a==' ') { j++;a=s[j]; continue;}
+            else
+            {
+            int m,n;
+            m=OPND.top();
+            OPND.pop();
+            n=OPND.top();
+            OPND.pop();
+            OPND.push(Operate(m,n,a));
+            j++;
+                a=s[j];
+            }
+        }
+    }
+    cout<<OPND.top();
+}
+int main()
+{
+    char s[100];char o[2]="#";
+    cout<<"请输入您想要求的中缀表达式："<<endl;
+    cin>>s;strcat(s,o);
+    cout<<"中缀表达式的值："<<endl;
+    mid(s);
+    cout<<endl;
+    cout<<"改为后缀表达式："<<endl;
+    afterchange(s);
+    cout<<endl;
+    cout<<"改为前缀表达式:"<<endl;
+    beforechange(s);
+    cout<<endl;
+    cout<<"基于前缀表达式求解"<<endl;
+    ibefore();
+    cout<<endl;
+    cout<<"基于后缀表达式求解"<<endl;
+    iafter();
+    cout<<endl;
+    return 0;
+}
