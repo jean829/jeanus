@@ -1,0 +1,471 @@
+#include <iostream>
+#include<cstring>
+//#include<stack>
+using namespace std;
+char t[100];
+char r[100];
+char priority[7][7]={
+    {'>','>','<','<','<','>','>'},
+    {'>','>','<','<','<','>','>'},
+    {'>','>','>','>','<','>','>'},
+    {'>','>','>','>','<','>','>'},
+    {'<','<','<','<','<','=','0'},   //‘=’左右括号相遇，括号内运算已完成；0：语法错误
+    {'>','>','>','>','0','>','>'},
+    {'<','<','<','<','<','0','='}    //'='表达式求值完毕
+    };
+typedef struct {
+    char* data;
+    int top;
+}stack;
+typedef struct {
+    int* data;
+    int top;
+}stack1;
+void initstack(stack & s) {
+    s.data = new char[100];
+    s.top = -1;
+}
+void push(stack & s, char e) {
+    s.data[++s.top]=e;
+}
+char pop(stack & s) {
+    return s.data[s.top--];
+}
+void show(stack & s) {
+    int k = s.top;
+    while (k > 0) {
+        cout << s.data[k];
+        k--;
+    }
+    cout << endl;
+}
+void initstack1(stack1 & s) {
+    s.data = new int[100];
+    s.top = -1;
+}
+void push1(stack1 & s, int e) {
+    s.data[++s.top] = e;
+}
+int pop1(stack1 & s)
+{
+    return s.data[s.top--];
+}
+void show1(stack1 & s) {
+    int k = s.top;
+    while (k >= 0) {
+        cout << s.data[k];
+        k--;
+    }
+    cout << endl;
+}
+char Procede(char a,char b)//判断ab运算符优先关系
+{
+    int i=0,j=0;
+    switch(a)
+    {
+        case'+':i=0;break;
+        case'-':i=1;break;
+        case'*':i=2;break;
+        case'/':i=3;break;
+        case'(':i=4;break;
+        case')':i=5;break;
+        case'#':i=6;break;   //#:结束符
+    }
+    switch(b)
+    {
+        case'+':j=0;break;
+        case'-':j=1;break;
+        case'*':j=2;break;
+        case'/':j=3;break;
+        case'(':j=4;break;
+        case')':j=5;break;
+        case'#':j=6;break;
+    }
+    return priority[i][j];
+}
+int Operate(int m,int n,char x)//计算函数
+{
+    if(x=='+')
+    return m+n;
+    if(x=='-')
+    return n-m;
+    if(x=='*')
+    return m*n;
+    if(x=='/')
+    return n/m;
+    return 0;
+}
+void beforechange(char ss[100])//变为前缀表达式
+{
+    stack OUT;
+    stack CHAR;
+    initstack(OUT);initstack(CHAR);
+    char s[100];
+    int l=0;
+    while(ss[l]!='#')
+    {
+        s[l]=ss[l];
+        l++;
+    }
+    s[l]='#';
+    int i=0;
+    while(s[i]!='#') i++;i--;//找到s的末端
+    while(i>=0)
+    {
+        int x=0;
+        if(s[i]>='0'&&s[i]<='9')
+        {
+        while(s[i]>='0'&&s[i]<='9')
+        {
+            x=x*10+s[i]-'0';
+            i--;
+        }
+        push(OUT,x+'0');
+        }
+        else
+        {
+            if((s[i]=='*')||(s[i]=='/'))
+            {
+                if(CHAR.data)
+                {
+                    if(Procede(CHAR.data[CHAR.top],s[i])=='<')
+                        push(CHAR,s[i]);
+                }
+                else push(CHAR,s[i]);
+                i--;
+            }
+            else if((s[i]=='+')||(s[i]=='-'))
+            {
+                if(CHAR.data)
+                {
+                    if(CHAR.data[CHAR.top]==')')
+                        push(CHAR,s[i]);
+                        else
+                    {
+                    if(Procede(CHAR.data[CHAR.top],s[i])=='<')
+                    push(CHAR,s[i]);
+                    else
+                    {
+                        push(OUT,CHAR.data[CHAR.top]);
+                        pop(CHAR);
+                        push(CHAR,s[i]);
+                    }
+                    }
+                }
+                i--;
+            }
+            else if(s[i]==')')
+            {
+            push(CHAR,s[i]);
+                i--;
+            }
+            else if(s[i]=='(')
+            {
+                while(CHAR.data[CHAR.top]!=')')
+                {
+                    if(CHAR.data[CHAR.top]!='('&&CHAR.data[CHAR.top]!=')')
+                    {
+                    push(OUT,CHAR.data[CHAR.top]);
+                        pop(CHAR);
+                    }
+                    else
+                    pop(CHAR);
+                }
+                pop(CHAR);
+                i--;
+            }
+        }
+    }
+    while(CHAR.top!=-1)
+    {
+        push(OUT,CHAR.data[CHAR.top]);
+        pop(CHAR);
+    }
+    int q=0;
+    while(OUT.top!=-1)
+    {
+        cout<<OUT.data[OUT.top]<<' ';
+        t[q]=OUT.data[OUT.top];t[++q]=' ';q++;
+        pop(OUT);
+    }
+    t[q-1]='#';
+}
+void afterchange(char ss[100])//变为后缀表达式
+{
+    stack  OUT;//存输出
+    stack  CHAR;//存运算符
+    initstack(OUT);
+    initstack(CHAR);
+    char s[100];
+    int l=0;
+    while(ss[l]!='#')
+    {
+        s[l]=ss[l];
+        l++;
+    }
+    s[l]='#';
+    int i=0;
+    while(s[i]!='#')
+    {
+        int x=0,flag=0;
+        if(s[i]>='0'&&s[i]<='9')
+        {
+        while(s[i]>='0'&&s[i]<='9')
+        {
+            s[i]=s[i]-'0';
+            x=x*10+s[i];
+            i++;
+        }
+        push(OUT,x+'0');
+        }
+        else
+        {
+            if(s[i]=='(')
+            {
+            push(CHAR,s[i]);
+                i++;
+                flag=1;
+            }
+            else if(s[i]==')')
+            {
+                while(CHAR.data[CHAR.top]!='(')
+                {
+                    if(CHAR.data[CHAR.top]!='('&&CHAR.data[CHAR.top]!=')')
+                    {
+                    push(OUT,CHAR.data[CHAR.top]);
+                        pop(CHAR);
+                    }
+                    else
+                    pop(CHAR);
+                }
+                pop(CHAR);
+                i++;
+            }
+            else if((s[i]=='*')||(s[i]=='/'))
+            {
+                if(CHAR.top!=-1)
+                {
+                  if(CHAR.data[CHAR.top]!='#')
+                  {
+                      if(CHAR.data[CHAR.top]=='*'||CHAR.data[CHAR.top]=='/')
+                      {
+                          push(OUT,CHAR.data[CHAR.top]);
+                          pop(CHAR);
+                          push(CHAR,s[i]);
+                      }
+                    else if(Procede(CHAR.data[CHAR.top],s[i])=='<')
+                        push(CHAR,s[i]);
+                  }
+                  else push(CHAR,s[i]);
+                }
+                else push(CHAR,s[i]);
+                i++;
+            }
+            else if((s[i]=='+')||(s[i]=='-'))
+            {
+                if(CHAR.top!=-1)
+                {
+                    if(Procede(CHAR.data[CHAR.top],s[i])=='<')
+                    push(CHAR,s[i]);
+                    else
+                    {
+                        push(OUT,CHAR.data[CHAR.top]);
+                        pop(CHAR);
+                        push(CHAR,s[i]);
+                    }
+                }
+                i++;
+            }
+        }
+    }
+    while(CHAR.top!=-1)
+    {
+        push(OUT,CHAR.data[CHAR.top]);
+        pop(CHAR);
+    }
+    stack  OUTO;
+    initstack(OUTO);
+    while(OUT.top!=-1)
+    {
+        push(OUTO,OUT.data[OUT.top]);
+        pop(OUT);
+    }
+    int q=0;
+    while(OUTO.top!=-1)
+    {
+        cout<<OUTO.data[OUTO.top]<<' ';
+        r[q]=OUTO.data[OUTO.top];r[++q]=' ';q++;
+        pop(OUTO);
+    }
+    r[q-1]='#';
+}
+void ibefore()//前缀表达式求值
+{
+    stack1 OPND;//存字符
+    stack OPTR;//存运算符
+    initstack1(OPND);
+    initstack(OPTR);
+    push(OPTR,'#');
+    char s[100];
+    int l=0;
+    while(t[l]!='#')
+    {
+        s[l]=t[l];
+        l++;
+    }
+    s[l]='#';
+    int i=0;
+    while(s[i]!='#') i++;i--;char a=s[i];int x;
+    while(i>=0)
+    {
+        x=0;int flag=0;
+        if(a>='0'&&a<='9')
+        {
+            flag=0;
+            while(a>='0'&&a<='9')
+            {
+                flag++;
+                i--;
+                a=s[i];
+            }
+            int j=i+1;
+            while(flag) {s[j]=s[j]-'0'; x=s[j]+x*10;j=j+1;flag--;}
+            push1(OPND,x);
+        }
+        else
+        {
+            if(a==' ') { i--;a=s[i]; continue;}
+            else
+            {
+            int m,n;
+            n=OPND.data[OPND.top];
+            pop1(OPND);
+            m=OPND.data[OPND.top];
+            pop1(OPND);
+            push1(OPND,Operate(m,n,a));
+            i--;
+                a=s[i];
+            }
+        }
+    }
+    show1(OPND);
+}
+void mid(char ss[100])//中缀表达式求值
+{
+    stack1 OPND;//存字符
+    stack OPTR;//存运算符
+    initstack1(OPND);initstack(OPTR);
+    push(OPTR,'#');
+    char s[100];
+    int i=0;
+    while(ss[i]!='#')
+    {
+        s[i]=ss[i];
+        i++;
+    }
+    s[i]='#';
+    int j=1;char a=s[0];int x;
+    while(a!='#'||OPTR.data[OPTR.top]!='#')
+    {
+        x=0;
+        if(a>='0'&&a<='9')
+        {
+            while(a>='0'&&a<='9')
+            {
+                x=x*10+a-'0';
+                a=s[j++];
+            }
+            push1(OPND,x);
+        }
+        else
+        {
+            switch(Procede(OPTR.data[OPTR.top],a))
+            {
+                case'<':
+                   push(OPTR,a);
+                    a=s[j++];
+                    break;
+                case'=':
+                    pop(OPTR);
+                    a=s[j++];
+                    break;
+                case'>':
+                    char p=OPTR.data[OPTR.top];pop(OPTR);
+                    int m=OPND.data[OPND.top];pop1(OPND);
+                    int n=OPND.data[OPND.top];pop1(OPND);
+                    push1(OPND,Operate(m, n, p));
+                    break;
+            }
+        }
+    }
+    show1(OPND);
+}
+void iafter()//后缀表达式求值
+{
+    stack1 OPND;//存字符
+    stack OPTR;//存运算符
+    initstack1(OPND);initstack(OPTR);
+    push(OPTR,'#');
+    char s[100];
+    int l=0;
+    while(r[l]!='#')
+    {
+        s[l]=r[l];
+        l++;
+    }
+    s[l]='#';
+    int i=0;
+    while(s[i]!='#') i++;i--;int j=0;char a=s[j];int x;
+    while(j<=i)
+    {
+        x=0;int flag=0;
+        if(a>='0'&&a<='9')
+        {
+            flag=0;
+            while(a>='0'&&a<='9')
+            {
+                flag++;
+                j++;
+                a=s[j];
+            }
+            int p=j-1;
+            while(flag) {s[p]=s[p]-'0'; x=s[p]+x*10;p=p+1;flag--;}
+            push1(OPND,x);
+        }
+        else
+        {
+            if(a==' ') { j++;a=s[j]; continue;}
+            else
+            {
+            int m,n;
+            m=OPND.data[OPND.top];
+            pop1(OPND);
+            n=OPND.data[OPND.top];
+            pop1(OPND);
+            push1(OPND,Operate(m,n,a));
+            j++;
+                a=s[j];
+            }
+        }
+    }
+    show1(OPND);
+}
+int main()
+{
+    char s[100];char o[2]="#";
+    cout<<"请输入您想要求的中缀表达式："<<endl;
+    cin>>s;strcat(s,o);
+    cout<<"中缀表达式的值："<<endl;
+    mid(s);
+    cout<<"改为后缀表达式："<<endl;
+    afterchange(s);
+    cout<<endl;
+    cout<<"改为前缀表达式:"<<endl;
+    beforechange(s);
+    cout<<endl;
+    cout<<"基于前缀表达式求解"<<endl;
+    ibefore();
+    cout<<"基于后缀表达式求解"<<endl;
+    iafter();
+    return 0;
+}
