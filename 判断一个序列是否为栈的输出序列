@@ -1,0 +1,44 @@
+#include <iostream>
+#include <stack>
+using namespace std;
+int main()
+{
+    int n;
+    cin>>n;
+    int a[n],b[n];
+    for(int i=0;i<n;i++)
+        cin>>a[i];
+    int l=0;
+    do
+    {
+        int x;cin>>x;
+        if(x!=' ') {b[l]=x; l++;}
+    }
+    while(cin.get()!='\n');
+    stack <int> OUT;
+    OUT.push(a[0]);
+    int i,j;
+    for(i=0,j=0;i<l;)
+    {
+        if(OUT.size())
+        {
+            if(b[i]==OUT.top())
+            {
+                i++;OUT.pop();
+            }
+            else
+            {
+                j++;
+                OUT.push(a[j]);
+            }
+        }
+        else
+        {
+            j++;
+            OUT.push(a[j]);
+        }
+    }
+    if(i==l) cout<<l;
+    else cout<<'0';
+    return 0;
+}
