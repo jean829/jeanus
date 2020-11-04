@@ -1,0 +1,47 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+    char n;
+    int d=0,max=0,x;
+    int a[50][50],i[50]={0};
+    n=getchar();
+    while(n!='\n')
+    {
+        switch (n)
+        {
+        case '(':
+            d++;
+            max=max>d? max:d;
+            n=getchar();
+            break;
+        case ')':
+            d--;
+            n=getchar();
+            break;
+        case ',':
+            n=getchar();
+            break;
+        default:
+            x=n-'0';
+            n=getchar();
+            while(n!='('&&n!=')'&&n!=',')
+            {
+                x=10*x+n-'0';
+                n=getchar();
+            }
+            a[d][i[d]]=x;
+            i[d]++;
+        }
+    }
+
+    for(int j=max;j>=0;j--)
+    {
+        for(int k=0;k<i[j];k++)
+        {
+            cout<<a[j][k]<<' ';
+        }
+        cout<<endl;
+    }
+    return 0;
+}
