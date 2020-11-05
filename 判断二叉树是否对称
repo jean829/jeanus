@@ -1,0 +1,86 @@
+#include<iostream>
+#include<cstring>
+using namespace std;
+#define max 100
+typedef struct node
+{
+    int data;
+    int depth; //深度
+    struct node *lchild, *rchild;
+}BTNode, *BTREE;
+int a[max][2];        //[0]节点值 [1]深度
+BTREE create_BT()
+{
+    BTREE stack[max],p=NULL,T=NULL;
+    char ch,s[max];
+    int flag=0,top=-1,i=0,x=0; long int len;
+    cin>>s;
+    len=strlen(s);
+    while(1)
+    {
+        x=0;
+        ch=s[i];
+        if(s[i] >='0'&& s[i]<='9')//数字转换
+        {
+            while(s[i] >= '0' && s[i] <= '9')
+            {
+                x=x*10+s[i]-'0';
+                i++;
+            }
+        }
+        else
+            i++;//读下一个字符
+        if(ch=='\n'||i>= len) //'\n'或者是s[]到头
+            return T;
+        else
+        {
+            switch(ch)
+            {
+                case '(':  stack[++top]=p;
+                           flag=1;
+                           break;
+                case ')':  top--;
+                           break;
+                case ',':  flag=2;
+                           break;
+                default :  p=(BTREE)malloc(sizeof(BTNode));
+                           p->data=x;
+                           p->depth=0;
+                           p->lchild=NULL;
+                           p->rchild=NULL;
+                           if(T==NULL)
+                           {
+                                T=p;
+                                p->depth=1;            //记录深度
+                           }
+                           else if(flag==1)
+                                {
+                                    stack[top]->lchild=p;
+                                    p->depth=top+2;    //记录深度
+                                }
+                           else
+                                {
+                                    stack[top]->rchild=p;
+                                    p->depth=top+2;    //记录深度
+                                }
+            }
+        }
+    }
+}
+int m=1;
+int judge(BTREE T)
+{
+    if(T->lchild==NULL&&T->rchild==NULL);
+    else if(T->lchild!=NULL&&T->rchild!=NULL) {judge(T->lchild);judge(T->rchild);}
+    else m=0;
+    return m;
+}
+ 
+int main()
+{
+    BTREE T;
+    T=create_BT();   //根据广义表构建树
+    if(judge(T)) cout<<"true";
+    else cout<<"false";
+    return 0;
+}
