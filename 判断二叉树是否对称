@@ -4,32 +4,26 @@ using namespace std;
 #define max 100
 typedef struct node
 {
-    int data;
+    char data;
     int depth; //深度
     struct node *lchild, *rchild;
 }BTNode, *BTREE;
-int a[max][2];        //[0]节点值 [1]深度
 BTREE create_BT()
 {
     BTREE stack[max],p=NULL,T=NULL;
-    char ch,s[max];
-    int flag=0,top=-1,i=0,x=0; long int len;
+    char ch,s[max],x=0;
+    int flag=0,top=-1,i=0; long int len;
     cin>>s;
     len=strlen(s);
     while(1)
     {
-        x=0;
         ch=s[i];
-        if(s[i] >='0'&& s[i]<='9')//数字转换
-        {
-            while(s[i] >= '0' && s[i] <= '9')
-            {
-                x=x*10+s[i]-'0';
-                i++;
-            }
-        }
-        else
-            i++;//读下一个字符
+        if(s[i]>='a'&&s[i]<='z')//数字转换
+               {
+                   x=s[i];i++;
+               }
+               else
+                   i++;//读下一个字符
         if(ch=='\n'||i>= len) //'\n'或者是s[]到头
             return T;
         else
@@ -68,19 +62,27 @@ BTREE create_BT()
     }
 }
 int m=1;
-int judge(BTREE T)
+int judge(BTREE T,BTREE T1)
 {
-    if(T->lchild==NULL&&T->rchild==NULL);
-    else if(T->lchild!=NULL&&T->rchild!=NULL) {judge(T->lchild);judge(T->rchild);}
+    if(T->lchild==NULL&&T1->lchild==NULL);
+    else if(T->rchild==NULL&&T1->rchild==NULL);
+    else if(T->lchild==NULL&&T1->lchild!=NULL) m=0;
+    else if(T->rchild==NULL&&T1->rchild!=NULL) m=0;
+    else if(T->lchild!=NULL&&T1->lchild==NULL) m=0;
+    else if(T->rchild!=NULL&&T1->rchild==NULL) m=0;
+    else if(T->lchild!=NULL&&T1->lchild!=NULL) {judge(T->lchild,T1->lchild);}
+    else if(T->rchild!=NULL&&T1->rchild!=NULL) {judge(T->rchild,T1->rchild);}
     else m=0;
     return m;
 }
  
 int main()
 {
-    BTREE T;
+    BTREE T;int m=0;
     T=create_BT();   //根据广义表构建树
-    if(judge(T)) cout<<"true";
+    if(T->lchild==NULL&&T->rchild==NULL) m=1;
+    if((judge(T->lchild,T->rchild))||m==1) cout<<"true";
     else cout<<"false";
     return 0;
 }
+
