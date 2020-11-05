@@ -1,0 +1,177 @@
+#include<iostream>
+#include<cstring>
+using namespace std;
+#define max 100
+typedef struct node
+{
+    char data;
+    int depth; //深度
+    int visit;
+    struct node *lchild, *rchild;
+}BTNode, *BTREE;
+BTREE create_BT()
+{
+    BTREE stack[max],p=NULL,T=NULL;
+    char ch,s[max],x=0;
+    int flag=0,top=-1,i=0; long int len;
+    cin>>s;
+    len=strlen(s);
+    while(1)
+    {
+        ch=s[i];
+        if((s[i] >='a'&& s[i]<='z')||(s[i]>='A'&&s[i]<='Z'))
+        {
+                x=s[i];
+                i++;
+        }
+        else
+            i++;//读下一个字符
+        if(ch=='\n'||i>= len) //'\n'或者是s[]到头
+            return T;
+        else
+        {
+            switch(ch)
+            {
+                case '(':  stack[++top]=p;
+                           flag=1;
+                           break;
+                case ')':  top--;
+                           break;
+                case ',':  flag=2;
+                           break;
+                default :  p=(BTREE)malloc(sizeof(BTNode));
+                           p->data=x;
+                           p->depth=0;
+                           p->lchild=NULL;
+                           p->rchild=NULL;
+                           if(T==NULL)
+                           {
+                                T=p;
+                                p->depth=1;            //记录深度
+                           }
+                           else if(flag==1)
+                                {
+                                    stack[top]->lchild=p;
+                                    p->depth=top+2;    //记录深度
+                                }
+                           else
+                                {
+                                    stack[top]->rchild=p;
+                                    p->depth=top+2;    //记录深度
+                                }
+            }
+        }
+    }
+}
+int children(BTREE n)//0:叶子节点，1:只有左孩子，-1:只有右孩子，2表示有两个孩子
+{
+    if (n->lchild==NULL && n->rchild==NULL) { return 0;}
+    else if(n->lchild!=NULL && n->rchild==NULL){ return 1; }
+    else if(n->lchild==NULL&&n->rchild!=NULL) {return -1;}
+    else { return 2; }
+}
+void showAllPath(BTREE t)
+{
+    BTREE temp,erase;
+    bool flag;
+    int front=0,rear=0;
+    BTREE que[max];
+    if (t!=NULL)
+    {
+        que[rear]=t;
+        rear++;
+        t->visit=1;
+        while(front!=rear)
+        {
+            temp=que[rear-1];
+            while(temp!=NULL)
+            {
+                que[rear]=temp->lchild;
+                rear++;
+                if (temp->lchild != NULL)
+                {
+                    temp->lchild->visit=1;
+                }
+                temp=temp->lchild;
+            }
+            rear--;//弹出空指针
+            if (front!=rear)
+            {
+                temp=que[rear - 1];
+                if (children(temp)==0)//如果是叶子节点则打印出数组中所有的数据
+                {
+                    int i=front;
+                    for(i=rear-1;i>=front;i--)
+                    {
+                        cout<<que[i]->data<<' ';
+                    }
+                    cout<<endl;
+                }
+                flag=1;
+                while (flag && front != rear)
+                {
+                    erase = que[rear - 1];
+                    if (children(erase) == 0)//如果是叶子节点，直接弹出，并且不退出循环
+                    {
+                        rear--;
+                        que[rear]=NULL;
+                    }
+                    else if(children(erase)==1)//只有左孩子
+                    {
+                        if(erase->lchild->visit)
+                        {
+                            rear--;
+                            que[rear] = NULL;
+                        }
+                        else
+                        {
+                            flag = false;
+                        }
+                    }
+                    else if (children(erase) == -1)//只有右孩子
+                    {
+                        if (erase->rchild->visit)
+                        {
+                            rear--;
+                            que[rear] = NULL;
+                        }
+                        else
+                        {
+                            flag = false;
+                        }
+                    }
+                    else//两个孩子都有
+                    {
+                        if (erase->lchild->visit && erase->rchild->visit)
+                        {
+                            rear--;
+                            que[rear]=NULL;
+                        }
+                        else
+                        {
+                            flag=0;
+                        }
+                    }
+                }
+                que[rear] = temp->rchild;
+                rear++;
+                if (temp->rchild != NULL)
+                {
+                    temp->rchild->visit=1;
+                }
+            }
+        }
+    }
+    else
+    {
+        cout<<"树为空！";
+    }
+}
+int main()
+{
+    BTREE T;
+    T=create_BT();   //根据广义表构建树
+    showAllPath(T);
+    return 0;
+}
+
