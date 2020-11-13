@@ -201,7 +201,7 @@ void tran(matrix a)
     c.mu=a.nu;c.nu=a.mu;c.tu=a.tu;
    if(c.tu)
    {
-       for(int m=0;m<a.tu;m++) num[m]=0;
+       for(int m=0;m<a.nu;m++) num[m]=0;
        for(int m=0;m<a.tu;m++) ++num[a.data[m].j];//列元素个数
        cpot[0]=1;
        for(int m=1;m<a.tu;m++) cpot[m]=cpot[m-1]+num[m-1];//求各列第一个非零元在data中的序号
