@@ -1,0 +1,241 @@
+#include <iostream>
+using namespace std;
+typedef int elemtype;
+#define max 100
+typedef struct
+{
+    int i=0;
+    int j=0;
+    elemtype e=0;
+}triple;
+typedef  struct
+{
+    triple data[max];
+    int mu;//行数
+    int nu;//列数
+    int tu;//非零元个数
+}matrix;
+int seek(matrix a,int p,int q)
+{
+    int l=0,flag=0;
+    while(l<a.tu)
+    {
+        if(a.data[l].i==p&&a.data[l].j==q) { flag=1; break; }
+        l++;
+    }
+    if(flag==1)
+    return l+1;//避免l=0与flag值冲突
+    else
+        return 0;
+}
+matrix set()
+{
+    matrix q;
+    int m1,n1,p1,l;
+    cout<<"请输入稀疏矩阵的行数，列数，和非零元素个数："<<endl;
+    cin>>m1>>n1>>p1;
+    q.mu=m1;q.nu=n1;q.tu=p1;
+    cout<<"请输入稀疏矩阵非零元素的行号、列号和元素的值："<<endl;
+    for(l=0;l<q.tu;l++)
+    {
+        int x,y,z;
+        cin>>x>>y>>z;
+        q.data[l].i=x;
+        q.data[l].j=y;
+        q.data[l].e=z;
+    }
+    return q;
+}
+void out1(matrix q)
+{
+    cout<<"矩阵："<<endl;
+    int k=0;
+    for(int m=0;m<q.mu;m++)
+    {
+        for(int n=0;n<q.nu;n++)
+        {
+            if(q.data[k].i==m&&q.data[k].j==n)
+            {
+                cout<<q.data[m].e<<' ';
+                k++;
+            }
+            else cout<<"0 ";
+        }
+        cout<<endl;
+    }
+}
+void out(matrix q)
+{
+    cout<<"所求的稀疏矩阵如下："<<endl;
+    for(int l=0;l<q.tu;l++)
+    {
+        cout<<q.data[l].i<<' '<<q.data[l].j<<' '<<q.data[l].e<<endl;
+    }
+    int k=0;
+    cout<<"矩阵："<<endl;
+    for(int m=0;m<q.mu;m++)
+    {
+        for(int n=0;n<q.nu;n++)
+        {
+            if(q.data[k].i==m&&q.data[k].j==n)
+            {
+                cout<<q.data[k].e<<' ';
+                k++;
+            }
+            else cout<<"0 ";
+        }
+        cout<<endl;
+    }
+}
+void add(matrix a,matrix b)
+{
+    matrix c;int l=0;
+    int p,q;
+    for(p=0,q=0;p<a.tu&&q<b.tu;)//p:a  q:b
+    {
+        if(a.data[p].i==b.data[q].i&&a.data[p].j==b.data[q].j)
+        {
+            c.data[l].i=a.data[p].i;
+            c.data[l].j=a.data[p].j;
+            c.data[l].e=a.data[p].e+b.data[q].e;
+            l++;
+            p++;q++;
+        }
+        else
+        {
+            if(a.data[p].i<b.data[q].i)
+            {
+                c.data[l].i=a.data[p].i;
+                c.data[l].j=a.data[p].j;
+                c.data[l].e=a.data[p].e;
+                l++;
+                p++;
+            }
+            else if(a.data[p].i==b.data[q].i)
+            {
+                if(a.data[p].j<b.data[q].j)
+                {
+                    c.data[l].i=a.data[p].i;
+                    c.data[l].j=a.data[p].j;
+                    c.data[l].e=a.data[p].e;
+                    l++;
+                    p++;
+                }
+                else
+                {
+                    c.data[l].i=b.data[q].i;c.data[l].j=b.data[q].j;
+                    c.data[l].e=b.data[q].e;
+                    l++;
+                    q++;
+                }
+            }
+            else
+            {
+                c.data[l].i=b.data[q].i;c.data[l].j=b.data[q].j;
+                c.data[l].e=b.data[q].e;
+                l++;
+                q++;
+            }
+        }
+    }
+        while(p!=a.tu)
+        {
+            c.data[l].i=a.data[p].i;
+            c.data[l].j=a.data[p].j;
+            c.data[l].e=a.data[p].e;
+            l++;
+            p++;
+        }
+        while(q!=b.tu)
+        {
+            c.data[l].i=b.data[q].i;
+            c.data[l].j=b.data[q].j;
+            c.data[l].e=b.data[q].e;
+            l++;
+            q++;
+        }
+    c.tu=l;c.mu=a.mu;c.nu=a.nu;//矩阵必须行列相同才能作和
+    cout<<"求和结果如下："<<endl;
+    out(c);
+}
+void mutiply(matrix a,matrix b)
+{
+    matrix c;int l=0,m=0,lie=0;//lie记录b列数是否满
+    c.mu=a.mu;c.nu=b.nu;
+    int l1=0;//为了返回当前行数（一行要和n列进行运算）
+    for(;l<a.tu;)
+    {
+        int n=a.data[l].i;
+        c.data[m].e=0;
+        lie=0;int l0=l;
+    while(lie<=l1)
+    {
+        c.data[m].e=0;
+        while(a.data[l].i==n)
+        {
+        if(seek(b,a.data[l].j,lie))
+        {
+            int x=seek(b,a.data[l].j,lie)-1;
+            c.data[m].i=n;
+            c.data[m].j=b.data[x].j;
+            c.data[m].e=a.data[l].e*b.data[x].e+c.data[m].e;
+        }
+            l++;
+        }
+        l--;
+        if(c.data[m].e==0) ; else m++;
+            lie++;
+        if(lie<(a.data[l].j+1)) { l1=a.data[l].j;l=l0;}
+            else l++;
+    }
+    }
+    cout<<"求积结果如下："<<endl;
+    c.tu=m;
+    out(c);
+    
+}
+void tran(matrix a)
+{
+    matrix c;
+    int num[a.mu-1],cpot[a.mu-1];
+    c.mu=a.nu;c.nu=a.mu;c.tu=a.tu;
+   if(c.tu)
+   {
+       for(int m=0;m<a.tu;m++) num[m]=0;
+       for(int m=0;m<a.tu;m++) ++num[a.data[m].j];//列元素个数
+       cpot[0]=1;
+       for(int m=1;m<a.tu;m++) cpot[m]=cpot[m-1]+num[m-1];//求各列第一个非零元在data中的序号
+       for(int m=0;m<a.tu;m++)
+       {
+           int x,y;
+           x=a.data[m].j;  y=cpot[x]-1;
+           c.data[y].i=a.data[m].j;
+           c.data[y].j=a.data[m].i;
+           c.data[y].e=a.data[m].e;
+           ++cpot[x];
+       }
+       
+   }
+    cout<<"转置后的矩阵为："<<endl;
+    out(c);
+    
+}
+int main()
+{
+    //matrix a;
+    //a=set();
+    //out(a);
+    cout<<"请输入你想要求和的两个矩阵："<<endl;
+    cout<<"矩阵1:"<<endl;
+    matrix b;
+    b=set();
+    out1(b);
+    cout<<"矩阵2:"<<endl;
+    matrix c;
+    c=set();
+    out1(c);
+    add(b,c);
+    mutiply(b,c);
+    //tran(b);
+    return 0;
+}
