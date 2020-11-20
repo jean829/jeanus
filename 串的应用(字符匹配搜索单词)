@@ -1,0 +1,91 @@
+#include<iostream>
+using namespace std;
+typedef long long ll;
+const int N=1e4+10;
+int wordnum;//单词个数
+ll cnt[100];//每个单词出现的次数
+typedef struct String
+{
+    char a[N];//存储文本
+    ll len=0;
+}S0,*S1;
+S0 s;
+S0 b[100];
+bool check(S0 c,S0 d)
+{
+    int flag=0;
+    for(int i = 0;i<c.len;i++)
+    {
+        
+        if(c.a[i]!=d.a[i])
+        {
+        flag=1;
+        break;
+        }
+    }
+    return (c.len==d.len&&flag==0);
+}
+int index()//在a中找字符串b，用cnt记录单词出现次数
+{
+    S0 c;
+    int numc=0;
+    ll lena=s.len;
+    for(int i=0;i<lena;i++)
+    {
+        numc=0;c.len=0;
+        while(islower(s.a[i]))
+        {
+            c.a[numc++]=s.a[i];
+            i++;
+            c.len++;
+        }
+        c.a[numc]=' ';
+        for(int i=0;i<wordnum;i++)//提取一个单词分别比较
+        {
+            if(check(c,b[i])) cnt[i]++;
+        }
+    }
+    return 0;
+}
+int Slower(char a[])//大写全变小写
+{
+    for(ll i=0;i<strlen(a);i++)
+        if(isupper(a[i])) a[i]=a[i]-'A'+'a';
+    return 0;
+}
+int main()
+{
+    FILE *fp;
+    if((fp=fopen("a.txt","rt"))==NULL)
+        cout<<"不能打开文本"<<endl;
+    else
+    {
+        ll i=0;
+        while(feof(fp)==0)
+        {
+            s.a[i++]=fgetc(fp);
+            s.len++;
+            if(s.a[i-1]=='\n') s.a[i-1]=' ';
+        }
+        s.len=i;
+        cout<<"成功录入文本"<<endl;
+        cout<<s.a<<endl;
+        cout<<"请输入您要查找的单词个数"<<endl;
+        cin>>wordnum;
+        for(int i=0;i<wordnum;i++)
+        {
+            cin>>b[i].a;
+            for(int j=0;b[i].a[j]!='\0';j++)
+            b[i].len++;
+            Slower(b[i].a);
+            cnt[i]=0;
+        }
+        Slower(s.a);
+        index();
+        for(int i=0;i<wordnum;i++)
+        {
+            cout<<b[i].a<<"这个单词出现了"<<cnt[i]<<"次"<<endl;;
+        }
+    }
+    return 0;
+}
