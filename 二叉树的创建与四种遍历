@@ -1,0 +1,154 @@
+#include<iostream>
+#include<queue>
+using namespace std;
+#define max 100
+char ch;
+typedef struct BiTNode
+{
+    char data;
+    struct BiTNode *lchild, *rchild;
+}BiTNode, *BiTree;
+BiTNode *T;
+BiTree q, p;
+typedef struct
+{
+    BiTree *base;
+    BiTree *top;
+    int stacksize;
+}SqStack;
+SqStack S;
+void InitStack(SqStack &S)
+{
+    S.base=(BiTree*)malloc(sizeof(BiTNode)*max);
+    S.top=S.base;
+    S.stacksize=max;
+}
+int Push(SqStack &S,BiTree e)
+{
+    if(S.top-S.base==S.stacksize)  //判断栈满
+        return 0;
+    *S.top++=e;                 //元素e压入栈顶，栈顶指针上移一位;
+    return 1;
+ }
+int Pop(SqStack &S,BiTree &e)
+{
+    if(S.top==S.base)
+      return 0;
+    e=*--S.top;
+    return 1;
+}
+BiTree GetTop(SqStack S)
+{
+    if(S.top!=S.base)   return *(S.top-1);
+    return 0;
+}
+int StackEmpty(SqStack &S)
+{
+    if(S.top - S.base == 0)    return 1;
+    else return 0;
+}
+void CreatBiTree(BiTree &T)
+{
+    cin>>ch;//读入字符
+    if(ch=='#')   T=NULL;//'#'：到了叶子结点
+    else
+    {
+        T=(BiTree)malloc(sizeof(BiTNode));
+        T->data=ch;
+        CreatBiTree(T->lchild);
+        CreatBiTree(T->rchild);
+    }
+}
+void post(BiTree T)//先序
+{
+    InitStack(S);
+    p=T;
+    while(p||!StackEmpty(S))//树不为空或者栈不为空还可以继续输出
+    {
+        if(p)
+        {
+            Push(S,p) ;//将结点入栈
+            cout<<p->data;//输出根结点的值
+            p=p->lchild ;//把左孩子作为根节点
+        }
+        else//如果树空，说明左树已经遍历完成
+        {
+            Pop(S,p) ;//退栈,p指向p的双亲
+            p=p->rchild ;//遍历右树
+        }
+    }
+}
+void Ztraverse(BiTree T)//中序遍历
+{
+    InitStack(S);//初始化栈
+    p=T;
+    q=(BiTree)malloc(sizeof(BiTNode));
+    while(p||!StackEmpty(S))
+    {
+        if(p)
+        {
+            Push(S,p);//根指针进栈
+            p=p->lchild;//根指针进栈，遍历左子树
+        }
+        else
+        {
+            Pop(S,q);//退栈,q指向双q亲
+            cout<<q->data;//访问根结点
+            p=q->rchild;//遍历右子树
+        }
+    }
+}
+void Htraverse(BiTree T)//后序遍历
+{
+    InitStack(S);
+    Push(S,T);//把根节点进栈
+    BiTNode *pre,*n;
+    n=NULL;//当前结点
+    pre=NULL;//上一结点
+    while(!StackEmpty(S))
+    {
+        n=GetTop(S);//把根节点给当前结点
+        if((n->lchild==NULL&&n->rchild==NULL)||(pre!=NULL&&(pre==n->lchild||pre== n->rchild)))
+        {//如果左右子树都没有或者左右子树都已经访问过了
+            cout<<n->data;//直接输出根结点
+            Pop(S,n);//将此时的根节点弹出
+            pre=n;//更新pre
+        }
+        else
+        {//记得先进右子树后进左子树，这样输出的顺序才对。
+            if(n->rchild!=NULL)//如果右子树不为空
+                Push(S,n->rchild) ;//把右子树进栈
+            if(n->lchild!=NULL)//如果左子树不为空
+                Push(S,n->lchild) ;//把左子树进栈
+        }
+    }
+}
+void Ctraverse(BiTree T) //层序遍历
+{
+    queue<BiTree>q;
+    q.push(T);
+    while(!q.empty())
+    {
+        BiTree root=q.front();
+        q.pop();
+        cout<<root->data;
+        if(root->lchild)
+            q.push(root->lchild);
+        if(root->rchild)
+            q.push(root->rchild);
+    }
+}
+int main()
+{
+    CreatBiTree(T);
+    cout<<"先序遍历:";
+    post(T); cout<<endl;
+    cout<<"中序遍历:";
+    Ztraverse(T);cout<<endl;
+    cout<<"后序遍历:";
+    Htraverse(T);cout<<endl;
+    cout<<"层序遍历:";
+    Ctraverse(T);cout<<endl;
+    return 0;
+}
+
